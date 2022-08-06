@@ -1,13 +1,23 @@
-name: 'Wait'
-description: 'Wait a designated number of milliseconds'
+name: Command PR Comment
+author: Zapata Computing
+description: Use the output of a command as a comment on a PR
+branding:
+  color: green
+  icon: circle
 inputs:
-  milliseconds:  # id of input
-    description: 'number of milliseconds to wait'
-    required: true
-    default: '1000'
-outputs:
-  time: # output will be available to future steps
-    description: 'The current time after waiting'
+  command:
+    description: The command to run
+    required: True
+  template:
+    description: 'The template of the comment. The string "%command%" will be replaces with the output of the command.'
+    required: False
+  update-text:
+    description: Updates the comment with this text instead of creating a new one
+    required: False
+  github-token:
+    description: Uses this token with the Github client
+    default: ${{ github.token }}
+    required: false
 runs:
-  using: 'node16'
-  main: 'dist/index.js'
+  using: "node16"
+  main: "dist/index.js"
