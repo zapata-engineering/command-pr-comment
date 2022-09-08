@@ -4,6 +4,8 @@
   <a href="https://github.com/zapatacomputing/command-pr-comment/actions"><img alt="javscript-action status" src="https://github.com/zapatacomputing/command-pr-comment/workflows/units-test/badge.svg"></a>
 </p>
 
+This Action is used for executing a command in Github Actions and displaying the result as comment on a pull request. This is useful for showing code coverage stats, details of failing tests and more. 
+
 ## Usage
 
 You can now consume the action by referencing the v1 branch
