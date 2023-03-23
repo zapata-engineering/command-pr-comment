@@ -1,6 +1,6 @@
-name: "units-test"
+name: "Integration Test"
 on:
-  pull_request:
+  pull_request_target:
   push:
     branches:
       - main
