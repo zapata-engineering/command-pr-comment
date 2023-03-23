@@ -1,6 +1,6 @@
 name: "Integration Test"
 on:
-  pull_request_target:
+  pull_request:
   push:
     branches:
       - main
@@ -9,6 +9,8 @@ on:
 jobs:
   # test action works running from the graph
   test:
+    permissions:
+      pull-requests: write
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
