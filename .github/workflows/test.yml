@@ -19,5 +19,10 @@ jobs:
         command: echo hello123
         template: "Some comment\n%command%"
         update-text: "Some comment"
+    - uses: ./
+      with:
+        command: echo "hello123 asdf"
+        template: "Some comment2\n%command%"
+        update-text: "Some comment2"
 
 

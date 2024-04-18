@@ -1,5 +1,6 @@
 const github = require('@actions/github');
 const core = require('@actions/core');
+const parse = require('shell-quote/parse');
 const { spawnSync } = require('node:child_process');
 
 
@@ -42,7 +43,7 @@ async function run() {
   }
 
   // Next, we execute the user's command
-  const splitCmd = cmd.split(" ");
+  const splitCmd = parse(cmd);
   const proc = spawnSync(splitCmd[0], splitCmd.slice(1));
   const cmdOut = proc.stdout.toString();
 
