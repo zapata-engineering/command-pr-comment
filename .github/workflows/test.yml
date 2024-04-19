@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      - 'releases/*'
+      - "releases/*"
 
 jobs:
   # test action works running from the graph
@@ -13,16 +13,14 @@ jobs:
       pull-requests: write
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-    - uses: ./
-      with:
-        command: echo hello123
-        template: "Some comment\n%command%"
-        update-text: "Some comment"
-    - uses: ./
-      with:
-        command: echo "hello123 asdf"
-        template: "Some comment2\n%command%"
-        update-text: "Some comment2"
-
-
+      - uses: actions/checkout@v4
+      - uses: ./
+        with:
+          command: echo "printing from stdout"
+          template: "Testing command\n%command%"
+          update-text: "Testing command"
+      - uses: ./
+        with:
+          command: node -e "process.stdout.write('testing Out');process.stderr.write('testing Error')"
+          template: "Testing stdout/stderr\n```\n%stdout%\n```\n```\n%stderr%\n```"
+          update-text: "Testing stdout/stderr"

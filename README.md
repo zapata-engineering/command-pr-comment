@@ -14,7 +14,7 @@ You can now consume the action by referencing the v1 branch
 uses: zapatacomputing/command-pr-comment@v1
 with:
   command: make show-coverage-text-report
-  template: "🚀 Code Coverage\n```\n%command%```"
+  template: "🚀 Code Coverage\n```\n%stdout%```"
   update-text: "🚀 Code Coverage"
 ```
 
