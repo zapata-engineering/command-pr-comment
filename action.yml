@@ -14,6 +14,10 @@ inputs:
   update-text:
     description: Updates the comment with this text instead of creating a new one
     required: False
+  working-dir:
+    description: Working directory relative to the repository root
+    default: "."
+    required: false
   github-token:
     description: Uses this token with the Github client
     default: ${{ github.token }}

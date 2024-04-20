@@ -8,7 +8,7 @@ const sanitize = require("path-sanitizer");
 // most @actions toolkit packages have async methods
 async function run() {
   const cmd = core.getInput("command");
-  const workingDirectory = core.getInput("working_directory");
+  const workingDirectory = core.getInput("working-dir");
   const messageTemplate = core.getInput("template");
   const updateText = core.getInput("update-text");
   const githubToken = core.getInput("github-token");
@@ -53,6 +53,9 @@ async function run() {
     workingDirectory === ""
       ? process.cwd()
       : path.join(process.cwd(), sanitize(workingDirectory));
+  core.debug(
+    `Input working dir: ${workingDirectory}. Final working dir: ${cwd}`,
+  );
   const proc = spawnSync(splitCmd[0], splitCmd.slice(1), { cwd });
   const cmdOut = proc.stdout.toString();
   const cmdErr = proc.stderr.toString();

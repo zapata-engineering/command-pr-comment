@@ -36,4 +36,4 @@ jobs:
           command: pwd
           template: "Testing working_dir\n```\n%stdout%\n```"
           update-text: "Testing working_dir"
-          working_dir: sub_dir
+          working-dir: sub_dir
