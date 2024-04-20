@@ -6036,6 +6036,84 @@ function onceStrict (fn) {
 
 /***/ }),
 
+/***/ 222:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+const path = __nccwpck_require__(1017)
+
+const DEFAULT_OPTIONS = {
+    decode: [
+        {
+            regex: /%2e/g,
+            replacement: '.'
+        },
+        {
+            regex: /%2f/g,
+            replacement: '/'
+        },
+        {
+            regex: /%5c/g,
+            replacement: '\\'
+        }
+    ],
+    parentDirectoryRegEx: /[\/\\]\.\.[\/\\]/g,
+    notAllowedRegEx: /:|\$|!|'|"|@|\+|`|\||=/g
+}
+
+function sanitize (pathToSanitize, options = DEFAULT_OPTIONS) {
+    if (!options) options = DEFAULT_OPTIONS
+    if (typeof options !== 'object') throw new Error('options must be an object')
+    if (!options.decode) options.decode = DEFAULT_OPTIONS.decode
+    if (!options.parentDirectoryRegEx) options.parentDirectoryRegEx = DEFAULT_OPTIONS.parentDirectoryRegEx
+    if (!options.notAllowedRegEx) options.notAllowedRegEx = DEFAULT_OPTIONS.notAllowedRegEx
+
+    if (typeof pathToSanitize !== 'string') {
+        // Stringify the path
+        pathToSanitize = `${pathToSanitize}`
+    }
+
+    let sanitizedPath = pathToSanitize
+
+    // Decode
+    options.decode.forEach(decode => {
+        sanitizedPath = sanitizedPath.replace(decode.regex, decode.replacement)
+    })
+
+    // Replace first (back)slash with a normal slash
+    sanitizedPath = sanitizedPath.replace(/^[\/\\]?/, '/')
+
+    // Replace /../ with /
+    sanitizedPath = sanitizedPath.replace(options.parentDirectoryRegEx, '/')
+
+    // Replace double (back)slashes with a single slash
+    sanitizedPath = sanitizedPath.replace(/[\/\\]+/g, '/')
+
+    // Normalize path
+    sanitizedPath = path.normalize(sanitizedPath)
+
+    // Remove / or \ in the end
+    while (sanitizedPath.endsWith('/') || sanitizedPath.endsWith('\\')) {
+        sanitizedPath = sanitizedPath.slice(0, -1)
+    }
+
+    // Remove / or \ in the beginning
+    while (sanitizedPath.startsWith('/') || sanitizedPath.startsWith('\\')) {
+        sanitizedPath = sanitizedPath.slice(1)
+    }
+
+    // Validate path
+    sanitizedPath = path.join('', sanitizedPath)
+
+    // Remove not allowed characters
+    sanitizedPath = sanitizedPath.replace(options.notAllowedRegEx, '')
+
+    return sanitizedPath
+}
+
+module.exports = sanitize
+
+/***/ }),
+
 /***/ 277:
 /***/ ((module) => {
 
@@ -29534,6 +29612,14 @@ module.exports = require("node:events");
 
 /***/ }),
 
+/***/ 9411:
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("node:path");
+
+/***/ }),
+
 /***/ 4492:
 /***/ ((module) => {
 
@@ -31324,10 +31410,13 @@ const github = __nccwpck_require__(5438);
 const core = __nccwpck_require__(2186);
 const parse = __nccwpck_require__(277);
 const { spawnSync } = __nccwpck_require__(7718);
+const path = __nccwpck_require__(9411);
+const sanitize = __nccwpck_require__(222);
 
 // most @actions toolkit packages have async methods
 async function run() {
   const cmd = core.getInput("command");
+  const workingDirectory = core.getInput("working-dir");
   const messageTemplate = core.getInput("template");
   const updateText = core.getInput("update-text");
   const githubToken = core.getInput("github-token");
@@ -31368,7 +31457,14 @@ async function run() {
 
   // Next, we execute the user's command
   const splitCmd = parse(cmd);
-  const proc = spawnSync(splitCmd[0], splitCmd.slice(1));
+  const cwd =
+    workingDirectory === ""
+      ? process.cwd()
+      : path.join(process.cwd(), sanitize(workingDirectory));
+  core.debug(
+    `Input working dir: ${workingDirectory}. Final working dir: ${cwd}`,
+  );
+  const proc = spawnSync(splitCmd[0], splitCmd.slice(1), { cwd });
   const cmdOut = proc.stdout.toString();
   const cmdErr = proc.stderr.toString();
 

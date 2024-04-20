@@ -24,3 +24,16 @@ jobs:
           command: node -e "process.stdout.write('testing Out');process.stderr.write('testing Error')"
           template: "Testing stdout/stderr\n```\n%stdout%\n```\n```\n%stderr%\n```"
           update-text: "Testing stdout/stderr"
+  test-working-dir:
+    permissions:
+      pull-requests: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: mkdir "sub_dir"
+      - uses: ./
+        with:
+          command: pwd
+          template: "Testing working_dir\n```\n%stdout%\n```"
+          update-text: "Testing working_dir"
+          working-dir: sub_dir
